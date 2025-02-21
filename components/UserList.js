@@ -1,7 +1,34 @@
-import React from 'react'
+"use client";
+import React, { useEffect, useState } from 'react';
 import User from './User'
 
 const UserList = () => {
+const USER_API_BASE_URL = "http://localhost:8085/api/v1/users";
+const [users, setusers] = useState(null);
+const [loading, setLoading] = useState(true);
+
+useEffect(() => {
+    const fetcheData = async () => {
+      setLoading(true)
+      try {
+          const respone = await fetch(USER_API_BASE_URL, {
+              method: "GET",
+              headers: {
+                  "Content-Type": "application/json",
+              },
+          });
+          const users = await respone.json();
+          console.log(respone)
+          setusers(users) 
+      } catch (error) {
+          console.log(error);
+      }
+      setLoading(false);
+    };
+    fetcheData();
+  }, []);
+
+
   return (
     <div className="container mx-auto my-8">
         <div className="flex shadow border-b">
@@ -14,9 +41,13 @@ const UserList = () => {
                         <th className='text-right font-medium text-gray-500 uppercase tracking-wide py-3 px-6'>Action</th>
                     </tr>
                 </thead>
-                <tbody className='bg-white'>
-                    <User/>
-                </tbody>
+                {!loading && (
+                    <tbody className='bg-white'>
+                        {users?.map((user) => (
+                            <User user={user} key={user.id}/>
+                        ))}
+                    </tbody>
+                )}
             </table>
         </div>
     </div>

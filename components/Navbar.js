@@ -1,3 +1,4 @@
+"use client";
 const Navbar = () => {
   return (
     <div className="bg-gray-800">

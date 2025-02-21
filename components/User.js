@@ -1,21 +1,22 @@
+"use client";
 import React from 'react'
 
-const User = () => {
+const User = ( {user} ) => {
   return (
-      <tr>
+      <tr key={user.id}>
         <td className='text-left px-6 py-4 whitespace-nowrap'>
             <div className='text-sm text-gray-500'>
-                Test User FN
+                {user.firstName}
             </div>
         </td>
         <td className='text-left px-6 py-4 whitespace-nowrap'>
             <div className='text-sm text-gray-500'>
-                Test User LN
+                {user.lastName}
             </div>
         </td>
         <td className='text-left px-6 py-4 whitespace-nowrap'>
             <div className='text-sm text-gray-500'>
-                Test User Email
+                {user.emailId}
             </div>
         </td>
         <td className='text-right px-6 py-4 whitespace-nowrap'>
