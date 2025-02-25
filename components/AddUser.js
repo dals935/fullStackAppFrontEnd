@@ -1,8 +1,23 @@
 import { Dialog, Transition } from '@headlessui/react'
 import React, { Fragment, useState } from 'react'
+import UserList from "../components/UserList"
 
 const AddUser = () => {
+    const USER_API_BASE_URL = "http://localhost:8085/api/v1/user";
     const [isOpen, setisOpen] = useState(false)
+    const [user, setUser] = useState({
+        id: "",
+        firstName: "",
+        lastName: "",
+        emailId: ""
+    });
+
+    const [responseUser, setresponseUser] = useState({
+        id: "",
+        firstName: "",
+        lastName: "",
+        emailId: ""
+    });
 
     function closeModal() {
         setisOpen(false)
@@ -11,6 +26,39 @@ const AddUser = () => {
     function openModal() {
         setisOpen(true)
     }
+
+    const handleChange = (event) => {
+        const value = event.target.value;
+        setUser({ ...user, [event.target.name]: value});
+    }
+
+    const saveUser = async (e) => {
+        e.preventDefault();
+        const response = await fetch(USER_API_BASE_URL, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(user)
+        });
+        if(!response.ok){
+            throw new Error("Sumtin Wong")
+        }
+        const _user = await response.json();
+        setresponseUser(_user);
+        reset(e);
+    };
+
+    const reset = (e) => {
+        e.preventDefault();
+        setUser({
+            id: "",
+            firstName: "",
+            lastName: "",
+            emailId: "",
+        });
+        setisOpen(false);
+    };
     
   return (
     <>
@@ -43,26 +91,26 @@ const AddUser = () => {
                                         <label className='block text-gray-600 text-sm font-normal'>
                                             First Name
                                         </label>
-                                        <input type='text' name='firstName' className='h-10 w-96 border mt-2 py-2 px-2'></input>
+                                        <input value={user.firstName} onChange={(e) => handleChange(e)} type='text' name='firstName' className='h-10 w-96 border mt-2 py-2 px-2'></input>
                                     </div>
                                     <div className='h-14 my-4'>
                                         <label className='block text-gray-600 text-sm font-normal'>
                                             Last Name
                                         </label>
-                                        <input type='text' name='firstName' className='h-10 w-96 border mt-2 py-2 px-2'></input>
+                                        <input value={user.lastName} onChange={(e) => handleChange(e)} type='text' name='lastName' className='h-10 w-96 border mt-2 py-2 px-2'></input>
                                     </div>
                                     <div className='h-14 my-4'>
                                         <label className='block text-gray-600 text-sm font-normal'>
                                             Email Id
                                         </label>
-                                        <input type='text' name='firstName' className='h-10 w-96 border mt-2 py-2 px-2'></input>
+                                        <input value={user.emailId} onChange={(e) => handleChange(e)} type='text' name='emailId' className='h-10 w-96 border mt-2 py-2 px-2'></input>
                                     </div>
                                     <div className='h-14 my=-4 space-x-4 pt-4'>
-                                        <button className='rounded text-white font-semibold bg-green-400 hover:bg-green-700 py-2 px-6'>
+                                        <button onClick={saveUser} className='rounded text-white font-semibold bg-green-400 hover:bg-green-700 py-2 px-6'>
                                             Save
                                         </button>
-                                        <button onClick={closeModal} className='rounded text-white font-semibold bg-red-400 hover:bg-red-700 py-2 px-6'>
-                                            Close
+                                        <button onClick={reset} className='rounded text-white font-semibold bg-red-400 hover:bg-red-700 py-2 px-6'>
+                                            Cancel
                                         </button>
                                     </div>
                                 </div>
@@ -72,6 +120,7 @@ const AddUser = () => {
                 </div>
             </Dialog>
         </Transition>
+        <UserList user={responseUser} />
     </>
   )
 }

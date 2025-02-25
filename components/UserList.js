@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import User from './User'
 
-const UserList = () => {
+const UserList = ({ user }) => {
 const USER_API_BASE_URL = "http://localhost:8085/api/v1/users";
 const [users, setusers] = useState(null);
 const [loading, setLoading] = useState(true);
@@ -26,7 +26,7 @@ useEffect(() => {
       setLoading(false);
     };
     fetcheData();
-  }, []);
+  }, [user]);
 
 
   return (
