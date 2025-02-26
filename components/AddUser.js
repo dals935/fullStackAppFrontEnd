@@ -12,7 +12,7 @@ const AddUser = () => {
         emailId: ""
     });
 
-    const [responseUser, setresponseUser] = useState({
+    const [responseUser, setResponseUser] = useState({
         id: "",
         firstName: "",
         lastName: "",
@@ -34,6 +34,20 @@ const AddUser = () => {
 
     const saveUser = async (e) => {
         e.preventDefault();
+
+        if (!user.firstName || user.firstName.trim().length < 3) {
+            alert('First Name must be at least 3 characters.');
+            return;
+        }
+        if (!user.lastName || user.lastName.trim().length < 3) {
+            alert('Last Name must be at least 3 characters.');
+            return;
+        }
+        if (!user.emailId || user.emailId.trim().length < 3) {
+            alert('Email must be at least 3 characters.');
+            return;
+        }
+
         const response = await fetch(USER_API_BASE_URL, {
             method: "POST",
             headers: {
@@ -45,7 +59,7 @@ const AddUser = () => {
             throw new Error("Sumtin Wong")
         }
         const _user = await response.json();
-        setresponseUser(_user);
+        setResponseUser(_user);
         reset(e);
     };
 
