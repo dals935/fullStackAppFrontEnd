@@ -8,7 +8,8 @@ const USER_API_BASE_URL_PLURAL = "http://localhost:8085/api/v1/users";
 const USER_API_BASE_URL_SINGULAR = "http://localhost:8085/api/v1/user";
 const [users, setusers] = useState(null);
 const [loading, setLoading] = useState(true);
-const [userId, setuserId] = useState(null)
+const [userId, setuserId] = useState(null);
+const [reponseUser, setReponseUser] = useState(null);
 
 useEffect(() => {
     const fetcheData = async () => {
@@ -29,7 +30,7 @@ useEffect(() => {
       setLoading(false);
     };
     fetcheData();
-  }, [user]);
+  }, [user, reponseUser]);
 
   const deleteUser = (e, id) => {
     e.preventDefault();
@@ -73,7 +74,7 @@ useEffect(() => {
                 </table>
             </div>
         </div>
-        <EditUser userId={userId}/>
+        <EditUser userId={userId} setReponseUser={setReponseUser}/>
     </>
   )
 }

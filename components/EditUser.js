@@ -1,7 +1,7 @@
 import { Dialog, Transition } from '@headlessui/react'
 import {React, useState, useEffect, Fragment} from 'react'
 
-const EditUser = ( {userId} ) => {
+const EditUser = ( {userId, setReponseUser} ) => {
 
 const USER_API_BASE_URL = "http://localhost:8085/api/v1/user";
 const USER_API_BASE_URL_SINGULAR = "http://localhost:8085/api/v1/user";
@@ -39,10 +39,6 @@ function closeModal() {
     setisOpen(false)
 }
 
-function openModal() {
-    setisOpen(true)
-}
-
 const handleChange = (event) => {
     const value = event.target.value;
     setUser({ ...user, [event.target.name]: value});
@@ -53,7 +49,36 @@ const reset = (e) => {
     setisOpen(false);
 };
 
-const updateUser = async (e) => {};
+const updateUser = async (e) => {
+    e.preventDefault
+
+    if (!user.firstName || user.firstName.trim().length < 3) {
+        alert('First Name must be at least 3 characters.');
+        return;
+    }
+    if (!user.lastName || user.lastName.trim().length < 3) {
+        alert('Last Name must be at least 3 characters.');
+        return;
+    }
+    if (!user.emailId || user.emailId.trim().length < 3) {
+        alert('Email must be at least 3 characters.');
+        return;
+    }
+
+    const response = await fetch(USER_API_BASE_URL_SINGULAR + "/" + userId, {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(user),
+    });
+    if(!response.ok) {
+        throw new Error("Sumtin Wong")
+    }
+    const _user = await response.json();
+    setReponseUser(_user);
+    reset(e);
+};
 
   return (
     <Transition appear show={isOpen} as={Fragment}>
@@ -94,7 +119,7 @@ const updateUser = async (e) => {};
                                 </div>
                                 <div className='h-14 my=-4 space-x-4 pt-4'>
                                     <button onClick={updateUser} className='rounded text-white font-semibold bg-green-400 hover:bg-green-700 py-2 px-6'>
-                                        Save
+                                        Update
                                     </button>
                                     <button onClick={reset} className='rounded text-white font-semibold bg-red-400 hover:bg-red-700 py-2 px-6'>
                                         Cancel
